@@ -1,0 +1,163 @@
+.taskTimer {
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.timerHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.timerLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.timerDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.totalTime,
+.sessionTime {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timeLabel {
+  font-size: 0.75rem;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timeValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  font-family: 'Courier New', monospace;
+}
+
+.sessionTime .timeValue {
+  font-size: 1rem;
+  color: #667eea;
+}
+
+.timerControls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.controlButton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.playButton {
+  background: #48bb78;
+  color: white;
+}
+
+.playButton:hover {
+  background: #38a169;
+  transform: translateY(-1px);
+}
+
+.pauseButton {
+  background: #ed8936;
+  color: white;
+}
+
+.pauseButton:hover {
+  background: #dd6b20;
+  transform: translateY(-1px);
+}
+
+.stopButton {
+  background: #e53e3e;
+  color: white;
+}
+
+.stopButton:hover {
+  background: #c53030;
+  transform: translateY(-1px);
+}
+
+.resetButton {
+  background: #718096;
+  color: white;
+}
+
+.resetButton:hover {
+  background: #4a5568;
+  transform: translateY(-1px);
+}
+
+.runningIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(72, 187, 120, 0.1);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: #38a169;
+  font-weight: 500;
+}
+
+.pulse {
+  width: 8px;
+  height: 8px;
+  background: #48bb78;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.7);
+  }
+  
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(72, 187, 120, 0);
+  }
+  
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(72, 187, 120, 0);
+  }
+}
+
+@media (max-width: 480px) {
+  .timerControls {
+    justify-content: center;
+  }
+  
+  .controlButton {
+    flex: 1;
+    min-width: 60px;
+  }
+}
