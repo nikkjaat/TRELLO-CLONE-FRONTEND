@@ -1,130 +1,151 @@
-import React, { useState, useEffect } from 'react';
-import { useTask } from '../../contexts/TaskContext';
-import { useAuth } from '../../contexts/AuthContext';
-import SubtaskList from '../SubtaskList/SubtaskList';
-import TaskTimer from '../TaskTimer/TaskTimer';
-import TaskComments from '../TaskComments/TaskComments';
-import { X, Save, Calendar, User, AlertTriangle, Tag } from 'lucide-react';
-import { format } from 'date-fns';
-import styles from './TaskModal.module.css';
+import React, { useState, useEffect } from "react";
+import { useTask } from "../../contexts/TaskContext";
+import { useAuth } from "../../contexts/AuthContext";
+import SubtaskList from "../SubtaskList/SubtaskList";
+import TaskTimer from "../TaskTimer/TaskTimer";
+import TaskComments from "../TaskComments/TaskComments";
+import { X, Save, Calendar, User, AlertTriangle, Tag } from "lucide-react";
+import { format } from "date-fns";
+import styles from "./TaskModal.module.css";
 
 const TaskModal = ({ task, onClose }) => {
   const { addTask, updateTask } = useTask();
   const { user, allUsers } = useAuth();
+  const [allUserList, setAllUserList] = useState([]);
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    priority: 'medium',
+    title: "",
+    description: "",
+    priority: "medium",
     assignee: user.name,
     assigneeId: user.id,
-    dueDate: format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
+    dueDate: format(
+      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      "yyyy-MM-dd"
+    ),
     tags: [],
     subtasks: [],
     timeSpent: 0,
-    comments: []
+    comments: [],
   });
-  const [tagInput, setTagInput] = useState('');
+  const [tagInput, setTagInput] = useState("");
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const users = await allUsers();
+      if (users) {
+        setAllUserList(users);
+      }
+    };
+
+    if (canAssignToOthers()) {
+      fetchUsers();
+    }
+  }, []);
 
   useEffect(() => {
     if (task) {
       setFormData({
-        title: task.title || '',
-        description: task.description || '',
-        priority: task.priority || 'medium',
+        title: task.title || "",
+        description: task.description || "",
+        priority: task.priority || "medium",
         assignee: task.assignee || user.name,
         assigneeId: task.assigneeId || user.id,
-        dueDate: task.dueDate || format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
+        dueDate:
+          task.dueDate ||
+          format(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
         tags: task.tags || [],
         subtasks: task.subtasks || [],
         timeSpent: task.timeSpent || 0,
-        comments: task.comments || []
+        comments: task.comments || [],
       });
     }
   }, [task, user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
+
     // Clear error for this field
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
 
   const handleAssigneeChange = (e) => {
-    const selectedUser = allUsers.find(u => u.id === parseInt(e.target.value));
-    setFormData(prev => ({
+    const selectedUser = allUsers.find(
+      (u) => u.id === parseInt(e.target.value)
+    );
+    setFormData((prev) => ({
       ...prev,
       assignee: selectedUser.name,
-      assigneeId: selectedUser.id
+      assigneeId: selectedUser.id,
     }));
   };
 
   const handleAddTag = (e) => {
     e.preventDefault();
     if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        tags: [...prev.tags, tagInput.trim()]
+        tags: [...prev.tags, tagInput.trim()],
       }));
-      setTagInput('');
+      setTagInput("");
     }
   };
 
   const handleRemoveTag = (tagToRemove) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
     }));
   };
 
   const handleSubtasksChange = (newSubtasks) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      subtasks: newSubtasks
+      subtasks: newSubtasks,
     }));
   };
 
   const handleTimeUpdate = (newTime) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      timeSpent: newTime
+      timeSpent: newTime,
     }));
   };
 
   const handleCommentsChange = (newComments) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      comments: newComments
+      comments: newComments,
     }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
+      newErrors.title = "Title is required";
     }
-    
+
     if (!formData.dueDate) {
-      newErrors.dueDate = 'Due date is required';
+      newErrors.dueDate = "Due date is required";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     if (task) {
@@ -132,12 +153,12 @@ const TaskModal = ({ task, onClose }) => {
     } else {
       addTask(formData);
     }
-    
+
     onClose();
   };
 
   const canAssignToOthers = () => {
-    return user.role === 'admin' || user.role === 'vendor';
+    return user.role === "admin" || user.role === "vendor";
   };
 
   return (
@@ -145,7 +166,7 @@ const TaskModal = ({ task, onClose }) => {
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>
-            {task ? 'Edit Task' : 'Create New Task'}
+            {task ? "Edit Task" : "Create New Task"}
           </h2>
           <button onClick={onClose} className={styles.closeButton}>
             <X size={20} />
@@ -163,10 +184,14 @@ const TaskModal = ({ task, onClose }) => {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className={`${styles.input} ${errors.title ? styles.inputError : ''}`}
+              className={`${styles.input} ${
+                errors.title ? styles.inputError : ""
+              }`}
               placeholder="Enter task title"
             />
-            {errors.title && <span className={styles.errorText}>{errors.title}</span>}
+            {errors.title && (
+              <span className={styles.errorText}>{errors.title}</span>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -217,9 +242,9 @@ const TaskModal = ({ task, onClose }) => {
                 disabled={!canAssignToOthers()}
               >
                 {canAssignToOthers() ? (
-                  allUsers.map(user => (
-                    <option key={user.id} value={user.id}>
-                      {user.name} ({user.role})
+                  allUserList.map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.name} ({u.role})
                     </option>
                   ))
                 ) : (
@@ -240,10 +265,14 @@ const TaskModal = ({ task, onClose }) => {
               name="dueDate"
               value={formData.dueDate}
               onChange={handleInputChange}
-              className={`${styles.input} ${errors.dueDate ? styles.inputError : ''}`}
-              min={format(new Date(), 'yyyy-MM-dd')}
+              className={`${styles.input} ${
+                errors.dueDate ? styles.inputError : ""
+              }`}
+              min={format(new Date(), "yyyy-MM-dd")}
             />
-            {errors.dueDate && <span className={styles.errorText}>{errors.dueDate}</span>}
+            {errors.dueDate && (
+              <span className={styles.errorText}>{errors.dueDate}</span>
+            )}
           </div>
 
           <div className={styles.formGroup}>
@@ -256,7 +285,7 @@ const TaskModal = ({ task, onClose }) => {
                 type="text"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleAddTag(e)}
+                onKeyPress={(e) => e.key === "Enter" && handleAddTag(e)}
                 className={styles.input}
                 placeholder="Add a tag and press Enter"
               />
@@ -270,7 +299,7 @@ const TaskModal = ({ task, onClose }) => {
             </div>
             {formData.tags.length > 0 && (
               <div className={styles.tags}>
-                {formData.tags.map(tag => (
+                {formData.tags.map((tag) => (
                   <span key={tag} className={styles.tag}>
                     {tag}
                     <button
@@ -286,7 +315,7 @@ const TaskModal = ({ task, onClose }) => {
             )}
           </div>
 
-          <SubtaskList 
+          <SubtaskList
             subtasks={formData.subtasks}
             onSubtasksChange={handleSubtasksChange}
           />
@@ -311,12 +340,9 @@ const TaskModal = ({ task, onClose }) => {
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className={styles.submitButton}
-            >
+            <button type="submit" className={styles.submitButton}>
               <Save size={16} />
-              {task ? 'Update Task' : 'Create Task'}
+              {task ? "Update Task" : "Create Task"}
             </button>
           </div>
         </form>

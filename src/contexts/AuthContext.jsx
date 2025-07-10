@@ -121,18 +121,31 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authToken");
   };
 
+  // Fetch all users for dropdowns
+  const allUsers = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      return res.data?.data || []; // fallback if data is undefined
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      return []; // ensures dropdowns don't break
+    }
+  };
+
   const value = {
     user,
     login,
     register,
     logout,
     loading,
-    allUsers: mockUsers.map((u) => ({
-      id: u.id,
-      email: u.email,
-      name: u.name,
-      role: u.role,
-    })),
+    allUsers,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

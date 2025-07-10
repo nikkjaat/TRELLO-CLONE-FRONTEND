@@ -12,127 +12,6 @@ export const useTask = () => {
   return context;
 };
 
-const initialTasks = [
-  {
-    id: "1",
-    title: "Setup Project Architecture",
-    description:
-      "Create the basic project structure and setup development environment",
-    priority: "high",
-    assignee: "Admin User",
-    assigneeId: 1,
-    status: "todo",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    dueDate: format(
-      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      "yyyy-MM-dd"
-    ),
-    tags: ["setup", "architecture"],
-    subtasks: [],
-    timeSpent: 0,
-    comments: [],
-  },
-  {
-    id: "2",
-    title: "Design User Interface",
-    description: "Create mockups and design system for the application",
-    priority: "medium",
-    assignee: "Vendor User",
-    assigneeId: 2,
-    status: "inprogress",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    dueDate: format(
-      new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-      "yyyy-MM-dd"
-    ),
-    tags: ["design", "ui"],
-    subtasks: [
-      {
-        id: "1",
-        text: "Create wireframes",
-        completed: true,
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: "2",
-        text: "Design components",
-        completed: false,
-        createdAt: new Date().toISOString(),
-      },
-    ],
-    timeSpent: 3600,
-    comments: [
-      {
-        id: "1",
-        text: "Started working on the mockups",
-        author: "Vendor User",
-        authorId: 2,
-        authorRole: "vendor",
-        createdAt: new Date().toISOString(),
-      },
-    ],
-  },
-  {
-    id: "3",
-    title: "Implement Authentication",
-    description: "Add user login and registration functionality",
-    priority: "high",
-    assignee: "Admin User",
-    assigneeId: 1,
-    status: "done",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    dueDate: format(
-      new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      "yyyy-MM-dd"
-    ),
-    tags: ["auth", "security"],
-    subtasks: [
-      {
-        id: "1",
-        text: "Setup login form",
-        completed: true,
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: "2",
-        text: "Add validation",
-        completed: true,
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: "3",
-        text: "Test authentication",
-        completed: true,
-        createdAt: new Date().toISOString(),
-      },
-    ],
-    timeSpent: 7200,
-    comments: [],
-  },
-  {
-    id: "4",
-    title: "Write Documentation",
-    description: "Create comprehensive documentation for the project",
-    priority: "low",
-    assignee: "Customer User",
-    assigneeId: 3,
-    status: "todo",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    dueDate: format(
-      new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-      "yyyy-MM-dd"
-    ),
-    tags: ["docs", "content"],
-    subtasks: [],
-    timeSpent: 0,
-    comments: [],
-  },
-];
-
 export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
   const [filters, setFilters] = useState({
@@ -141,13 +20,24 @@ export const TaskProvider = ({ children }) => {
     dueDate: "all",
   });
 
-  useEffect(() => {
-    const storedTasks = localStorage.getItem("taskManager_tasks");
-    if (storedTasks) {
-      setTasks(JSON.parse(storedTasks));
-    } else {
-      setTasks(initialTasks);
+  const getTasks = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/tasks`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      setTasks(res.data.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
     }
+  };
+
+  useEffect(() => {
+    getTasks();
   }, []);
 
   useEffect(() => {
@@ -167,6 +57,17 @@ export const TaskProvider = ({ children }) => {
           },
         }
       );
+
+      if (res.data.success) {
+        const newTask = {
+          ...task,
+          id: res.data.id,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        setTasks((prev) => [...prev, newTask]);
+        getTasks();
+      }
     } catch (error) {
       console.error("Error adding task:", error);
       throw new Error("Failed to add task");
@@ -196,6 +97,8 @@ export const TaskProvider = ({ children }) => {
       )
     );
   };
+
+  console.log(tasks);
 
   const getFilteredTasks = () => {
     return tasks.filter((task) => {
