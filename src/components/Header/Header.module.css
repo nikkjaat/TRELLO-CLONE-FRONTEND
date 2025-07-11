@@ -1,11 +1,12 @@
 .header {
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
+  transition: all 0.3s ease;
 }
 
 .container {
@@ -16,19 +17,30 @@
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
+  min-height: 80px;
 }
 
 .left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.brand {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #2d3748;
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .userInfo {
@@ -40,100 +52,547 @@
 .welcome {
   color: #718096;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .role {
   color: white;
   font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  max-width: 600px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .right {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
 }
 
-.profileButton,
-.settingsButton,
-.dashboardButton,
-.logoutButton {
+.desktopActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.actionButton {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   border: none;
-  border-radius: 8px;
-  background: transparent;
+  border-radius: 12px;
+  background: rgba(102, 126, 234, 0.1);
+  backdrop-filter: blur(10px);
   cursor: pointer;
   transition: all 0.3s ease;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  overflow: hidden;
+}
+
+.actionButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.actionButton:hover::before {
+  left: 100%;
+}
+
+.actionButton:hover {
+  background: rgba(102, 126, 234, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.actionButton.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.buttonText {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.filterButton {
+  background: rgba(72, 187, 120, 0.1);
+  color: #48bb78;
+  border-color: rgba(72, 187, 120, 0.2);
+}
+
+.filterButton:hover {
+  background: rgba(72, 187, 120, 0.2);
+  border-color: rgba(72, 187, 120, 0.3);
+  box-shadow: 0 8px 25px rgba(72, 187, 120, 0.25);
+}
+
+.notificationBadge {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  background: #e53e3e;
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 0.125rem 0.375rem;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.profileSection {
+  position: relative;
+}
+
+.profileButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.1) 0%,
+    rgba(118, 75, 162, 0.1) 100%
+  );
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #2d3748;
+  font-weight: 600;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.profileButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.profileButton:hover::before {
+  left: 100%;
+}
+
+.profileButton:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.2) 0%,
+    rgba(118, 75, 162, 0.2) 100%
+  );
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.profileName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.mobileMenuButton {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.mobileMenuButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.mobileMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  animation: slideDown 0.3s ease-out;
+  z-index: 50;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobileMenuContent {
+  padding: 2rem;
+}
+
+.mobileUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.1) 0%,
+    rgba(118, 75, 162, 0.1) 100%
+  );
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.mobileAvatar {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  flex-shrink: 0;
+}
+
+.mobileUserDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobileUserName {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.mobileUserEmail {
+  font-size: 0.875rem;
   color: #718096;
-  font-weight: 500;
 }
 
-.profileButton:hover,
-.settingsButton:hover,
-.dashboardButton:hover {
+.mobileUserRole {
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mobileActions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mobileActionButton {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 12px;
   background: rgba(102, 126, 234, 0.1);
   color: #667eea;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
-.dashboardButton.active {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+.mobileActionButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
 }
 
-.logoutButton {
+.mobileActionButton:hover::before {
+  left: 100%;
+}
+
+.mobileActionButton:hover {
+  background: rgba(102, 126, 234, 0.2);
+  transform: translateX(8px);
+}
+
+.mobileActionButton.active {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
-.logoutButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+.mobileActionButton.logoutButton {
+  background: rgba(229, 62, 62, 0.1);
+  color: #e53e3e;
+  border-color: rgba(229, 62, 62, 0.2);
 }
 
+.mobileActionButton.logoutButton:hover {
+  background: rgba(229, 62, 62, 0.2);
+}
+
+.mobileFilters {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  animation: slideDown 0.3s ease-out;
+  z-index: 50;
+}
+
+.mobileFiltersHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(
+    135deg,
+    rgba(72, 187, 120, 0.1) 0%,
+    rgba(56, 161, 105, 0.1) 100%
+  );
+}
+
+.mobileFiltersHeader h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+.closeFiltersButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(229, 62, 62, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: #e53e3e;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.closeFiltersButton:hover {
+  background: rgba(229, 62, 62, 0.2);
+  transform: scale(1.1);
+}
+
+.mobileFiltersContent {
+  padding: 2rem;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 40;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Tablet Styles */
 @media (max-width: 1024px) {
+  .container {
+    padding: 1rem 1.5rem;
+    gap: 1rem;
+  }
+
+  .buttonText {
+    display: none;
+  }
+
+  .profileName {
+    display: none;
+  }
+
+  .welcome {
+    display: none;
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
   .container {
     padding: 1rem;
     gap: 1rem;
   }
-  
-  .center {
-    max-width: none;
+
+  .brand {
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .userInfo {
+    gap: 0.5rem;
+  }
+
+  .role {
+    font-size: 0.625rem;
+    padding: 0.125rem 0.5rem;
+  }
+
+  .desktopActions {
+    display: none;
+  }
+
+  .mobileMenuButton {
+    display: flex;
   }
 }
 
-@media (max-width: 768px) {
+/* Small Mobile Styles */
+@media (max-width: 480px) {
   .container {
-    flex-direction: column;
-    gap: 1rem;
+    padding: 0.75rem;
+    min-height: 70px;
   }
-  
-  .left {
-    align-items: center;
+
+  .title {
+    font-size: 1.25rem;
   }
-  
-  .center {
-    width: 100%;
+
+  .mobileMenuContent {
+    padding: 1.5rem;
   }
-  
-  .right {
-    justify-content: center;
+
+  .mobileUserInfo {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
   }
-  
-  .welcome {
-    display: none;
+
+  .mobileAvatar {
+    width: 50px;
+    height: 50px;
   }
+
+  .mobileUserName {
+    font-size: 1rem;
+  }
+
+  .mobileActionButton {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .mobileFiltersContent {
+    padding: 1.5rem;
+  }
+}
+
+/* Focus styles for accessibility */
+.actionButton:focus-visible,
+.profileButton:focus-visible,
+.mobileActionButton:focus-visible,
+.mobileMenuButton:focus-visible,
+.closeFiltersButton:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
 }

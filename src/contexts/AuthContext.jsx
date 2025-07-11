@@ -65,6 +65,10 @@ export const AuthProvider = ({ children }) => {
           email: res.data.user.email,
           name: res.data.user.name,
           role: res.data.user.role,
+          createdAt: res.data.user.createdAt,
+          lastLogin: res.data.user.lastLogin,
+          isActive: res.data.user.isActive,
+          avatar: res.data.user.avatar || null,
         };
         setUser(newUser);
         localStorage.setItem("taskManager_user", JSON.stringify(newUser));

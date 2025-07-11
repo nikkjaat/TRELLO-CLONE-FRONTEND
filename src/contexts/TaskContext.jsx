@@ -98,8 +98,6 @@ export const TaskProvider = ({ children }) => {
     );
   };
 
-  console.log(tasks);
-
   const getFilteredTasks = () => {
     return tasks.filter((task) => {
       if (filters.priority !== "all" && task.priority !== filters.priority)
