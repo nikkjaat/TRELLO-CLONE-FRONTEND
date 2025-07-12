@@ -25,6 +25,7 @@ const SettingsModal = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState("profile");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const { theme, setLightTheme, setDarkTheme, setAutoTheme } = useTheme();
 
   // Profile form state
   const [profileData, setProfileData] = useState({
