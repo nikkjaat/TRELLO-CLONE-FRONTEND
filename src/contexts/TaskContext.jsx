@@ -40,7 +40,10 @@ export const TaskProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    getTasks();
+    if (user) {
+      // Fetch tasks only if user is logged in
+      getTasks();
+    }
   }, [user]);
 
   useEffect(() => {
