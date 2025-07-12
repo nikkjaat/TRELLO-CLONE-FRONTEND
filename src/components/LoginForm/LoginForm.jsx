@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useTask } from "../../contexts/TaskContext";
 import { User, Mail, Lock, UserPlus, LogIn } from "lucide-react";
 import styles from "./LoginForm.module.css";
 
@@ -14,6 +15,7 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login, register } = useAuth();
+  const { getTasks } = useTask();
 
   const handleInputChange = (e) => {
     setFormData((prev) => ({
@@ -29,7 +31,7 @@ const LoginForm = () => {
     setError("");
 
     try {
-      const result = isLogin
+      let result = isLogin
         ? await login(formData.email, formData.password)
         : await register(
             formData.email,
@@ -40,7 +42,11 @@ const LoginForm = () => {
 
       if (!result.success) {
         setError(result.error);
+        return; // ⛔ Prevent getTasks() if login/register failed
       }
+
+      // ✅ Only run if login/register successful
+      await getTasks();
     } catch (err) {
       setError("An error occurred. Please try again");
     } finally {

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { format } from "date-fns";
 import axios from "axios";
+import { useAuth } from "./AuthContext";
 
 const TaskContext = createContext();
 
@@ -19,6 +20,7 @@ export const TaskProvider = ({ children }) => {
     assignee: "all",
     dueDate: "all",
   });
+  const { user } = useAuth();
 
   const getTasks = async () => {
     try {
@@ -31,6 +33,7 @@ export const TaskProvider = ({ children }) => {
         }
       );
       setTasks(res.data.data);
+      console.log(res.data.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -38,7 +41,7 @@ export const TaskProvider = ({ children }) => {
 
   useEffect(() => {
     getTasks();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     localStorage.setItem("taskManager_tasks", JSON.stringify(tasks));

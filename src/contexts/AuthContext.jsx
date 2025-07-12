@@ -11,31 +11,6 @@ export const useAuth = () => {
   return context;
 };
 
-// Mock users for demonstration
-const mockUsers = [
-  {
-    id: 1,
-    email: "admin@example.com",
-    password: "admin123",
-    name: "Admin User",
-    role: "admin",
-  },
-  {
-    id: 2,
-    email: "vendor@example.com",
-    password: "vendor123",
-    name: "Vendor User",
-    role: "vendor",
-  },
-  {
-    id: 3,
-    email: "customer@example.com",
-    password: "customer123",
-    name: "Customer User",
-    role: "customer",
-  },
-];
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
