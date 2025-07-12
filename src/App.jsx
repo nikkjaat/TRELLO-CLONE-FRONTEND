@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import LoginForm from './components/LoginForm/LoginForm';
-import KanbanBoard from './components/KanbanBoard/KanbanBoard';
-import Dashboard from './components/Dashboard/Dashboard';
-import Header from './components/Header/Header';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { TaskProvider } from './contexts/TaskContext';
-import styles from './App.module.css';
+import React, { useState, useEffect } from "react";
+import LoginForm from "./components/LoginForm/LoginForm";
+import KanbanBoard from "./components/KanbanBoard/KanbanBoard";
+import Dashboard from "./components/Dashboard/Dashboard";
+import Header from "./components/Header/Header";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { TaskProvider } from "./contexts/TaskContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import styles from "./App.module.css";
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -24,7 +25,7 @@ function AppContent() {
     <div className={styles.app}>
       {user ? (
         <>
-          <Header 
+          <Header
             onShowDashboard={() => setShowDashboard(!showDashboard)}
             showingDashboard={showDashboard}
           />
@@ -41,11 +42,13 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <TaskProvider>
-        <AppContent />
-      </TaskProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <TaskProvider>
+          <AppContent />
+        </TaskProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

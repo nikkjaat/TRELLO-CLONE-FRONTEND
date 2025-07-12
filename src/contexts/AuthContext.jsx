@@ -94,6 +94,67 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = async (profileData) => {
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/profile`,
+        profileData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      if (res.data.success) {
+        const updatedUser = res.data.user;
+        setUser((prev) => ({
+          ...prev,
+          ...updatedUser,
+        }));
+        localStorage.setItem("taskManager_user", JSON.stringify(updatedUser));
+        return { success: true, response: res.data };
+      }
+      return { success: false, error: res.data.message || "Update failed" };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error.response?.data?.message || "Something went wrong during update",
+      };
+    }
+  };
+
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/change-password`,
+        {
+          currentPassword,
+          newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      if (res.data.success) {
+        return { success: true, response: res.data };
+      }
+      return {
+        success: false,
+        error: res.data.message || "Change password failed",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error.response?.data?.message ||
+          "Something went wrong during password change",
+      };
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("taskManager_user");
@@ -122,6 +183,8 @@ export const AuthProvider = ({ children }) => {
     user,
     login,
     register,
+    updateProfile,
+    changePassword,
     logout,
     loading,
     allUsers,

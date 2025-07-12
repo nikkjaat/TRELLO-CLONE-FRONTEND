@@ -33,7 +33,6 @@ export const TaskProvider = ({ children }) => {
         }
       );
       setTasks(res.data.data);
-      console.log(res.data.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }

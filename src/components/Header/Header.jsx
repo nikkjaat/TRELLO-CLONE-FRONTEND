@@ -13,6 +13,7 @@ import {
 import FilterPanel from "../FilterPanel/FilterPanel";
 import ProfileDropdown from "../ProfileDropdown/ProfileDropdown";
 import SettingsModal from "../SettingsModal/SettingsModal";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import styles from "./Header.module.css";
 
 const Header = ({ onShowDashboard, showingDashboard }) => {
@@ -82,14 +83,7 @@ const Header = ({ onShowDashboard, showingDashboard }) => {
           <div className={styles.right}>
             {/* Desktop Actions */}
             <div className={styles.desktopActions}>
-              <button
-                onClick={toggleMobileFilters}
-                className={`${styles.actionButton} ${styles.filterButton}`}
-                title="Toggle Filters"
-              >
-                <Filter size={20} />
-                <span className={styles.buttonText}>Filters</span>
-              </button>
+              <ThemeToggle showLabel={false} size="medium" />
 
               <button
                 onClick={onShowDashboard}
@@ -171,6 +165,10 @@ const Header = ({ onShowDashboard, showingDashboard }) => {
               </div>
 
               <div className={styles.mobileActions}>
+                <div className={styles.mobileThemeToggle}>
+                  <ThemeToggle showLabel={true} size="medium" />
+                </div>
+
                 <button
                   onClick={() => {
                     toggleMobileFilters();

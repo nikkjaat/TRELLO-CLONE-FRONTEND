@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useTheme } from "../../contexts/ThemeContext";
 import {
   X,
   User,
@@ -13,6 +14,9 @@ import {
   EyeOff,
   Check,
   AlertCircle,
+  Sun,
+  Moon,
+  Monitor,
 } from "lucide-react";
 import styles from "./SettingsModal.module.css";
 
@@ -66,8 +70,28 @@ const SettingsModal = ({ onClose }) => {
     setLoading(true);
     setMessage({ type: "", text: "" });
 
+    // Check if any profile field has actually changed
+    const isEmailChanged = profileData.email !== user.email;
+    const isNameChanged = profileData.name !== user.name;
+
+    if (!isEmailChanged && !isNameChanged) {
+      setMessage({ type: "error", text: "No changes detected" });
+      setLoading(false);
+      return;
+    }
+
+    const updates = {};
+    if (isNameChanged) updates.name = profileData.name;
+    if (isEmailChanged) updates.email = profileData.email;
+
+    if (Object.keys(updates).length === 0) {
+      setMessage({ type: "error", text: "No changes detected" });
+      setLoading(false);
+      return;
+    }
+
     try {
-      const result = await updateProfile(profileData.name, profileData.email);
+      const result = await updateProfile(updates);
       if (result.success) {
         setMessage({ type: "success", text: "Profile updated successfully!" });
       } else {
@@ -144,6 +168,21 @@ const SettingsModal = ({ onClose }) => {
       ...prev,
       [field]: !prev[field],
     }));
+  };
+
+  const handleThemeChange = (newTheme) => {
+    switch (newTheme) {
+      case "light":
+        setLightTheme();
+        break;
+      case "dark":
+        setDarkTheme();
+        break;
+      case "auto":
+        setAutoTheme();
+        break;
+    }
+    setMessage({ type: "success", text: `Theme changed to ${newTheme}!` });
   };
 
   const renderTabContent = () => {
@@ -358,23 +397,44 @@ const SettingsModal = ({ onClose }) => {
       case "preferences":
         return (
           <form onSubmit={handlePreferencesSubmit} className={styles.form}>
-            <div className={styles.formGroup}>
-              <label htmlFor="theme" className={styles.label}>
-                <Palette size={16} />
-                Theme
-              </label>
-              <select
-                id="theme"
-                value={preferences.theme}
-                onChange={(e) =>
-                  setPreferences((prev) => ({ ...prev, theme: e.target.value }))
-                }
-                className={styles.select}
+            <div className={styles.sectionTitle}>
+              <Palette size={16} />
+              Theme Preferences
+            </div>
+
+            <div className={styles.themeOptions}>
+              <button
+                type="button"
+                onClick={() => handleThemeChange("light")}
+                className={`${styles.themeOption} ${
+                  theme === "light" ? styles.active : ""
+                }`}
               >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="auto">Auto</option>
-              </select>
+                <Sun size={20} />
+                <span>Light</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleThemeChange("dark")}
+                className={`${styles.themeOption} ${
+                  theme === "dark" ? styles.active : ""
+                }`}
+              >
+                <Moon size={20} />
+                <span>Dark</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleThemeChange("auto")}
+                className={`${styles.themeOption} ${
+                  theme === "auto" ? styles.active : ""
+                }`}
+              >
+                <Monitor size={20} />
+                <span>Auto</span>
+              </button>
             </div>
 
             <div className={styles.formGroup}>
