@@ -152,6 +152,26 @@
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
+.applyButton {
+  background: rgba(72, 187, 120, 0.1);
+  color: #48bb78;
+  border: 1px solid rgba(72, 187, 120, 0.2);
+}
+
+.applyButton:hover {
+  background: rgba(72, 187, 120, 0.2);
+  transform: translateY(-1px);
+}
+
+.applyButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.active {
+  border: 2px solid #007bff;
+}
+
 @media (max-width: 768px) {
   .bulkActions {
     bottom: 1rem;
@@ -160,17 +180,17 @@
     transform: none;
     max-width: none;
   }
-  
+
   .actions {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .actionGroup {
     justify-content: space-between;
   }
-  
+
   .assigneeSelect {
     min-width: auto;
     flex: 1;

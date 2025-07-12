@@ -1,9 +1,18 @@
-import React from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useTask } from '../../contexts/TaskContext';
-import { Calendar, User, AlertTriangle, Edit, Trash2, Clock, MessageCircle, CheckSquare } from 'lucide-react';
-import { format } from 'date-fns';
-import styles from './TaskCard.module.css';
+import React from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { useTask } from "../../contexts/TaskContext";
+import {
+  Calendar,
+  User,
+  AlertTriangle,
+  Edit,
+  Trash2,
+  Clock,
+  MessageCircle,
+  CheckSquare,
+} from "lucide-react";
+import { format } from "date-fns";
+import styles from "./TaskCard.module.css";
 
 const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
   const { user } = useAuth();
@@ -11,39 +20,46 @@ const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'high': return '#e53e3e';
-      case 'medium': return '#ed8936';
-      case 'low': return '#38a169';
-      default: return '#718096';
+      case "high":
+        return "#e53e3e";
+      case "medium":
+        return "#ed8936";
+      case "low":
+        return "#38a169";
+      default:
+        return "#718096";
     }
   };
+
 
   const isOverdue = () => {
     const today = new Date();
     const dueDate = new Date(task.dueDate);
-    return dueDate < today && task.status !== 'done';
+    return dueDate < today && task.status !== "done";
   };
 
   const canEditTask = () => {
-    return user.role === 'admin' || 
-           (user.role === 'vendor' && task.assigneeId === user.id) ||
-           task.assigneeId === user.id;
+    return (
+      user.role === "admin" ||
+      (user.role === "vendor" && task.assigneeId === user.id) ||
+      task.assigneeId === user.id
+    );
   };
 
   const canDeleteTask = () => {
-    return user.role === 'admin';
+    return user.role === "admin";
   };
 
   const handleDelete = (e) => {
     e.stopPropagation();
-    if (window.confirm('Are you sure you want to delete this task?')) {
+    if (window.confirm("Are you sure you want to delete this task?")) {
       deleteTask(task.id);
     }
   };
 
   const getCompletedSubtasks = () => {
     if (!task.subtasks) return { completed: 0, total: 0 };
-    const completed = task.subtasks.filter(s => s.completed).length;
+    const completed = task.subtasks.filter((s) => s.completed).length;
     return { completed, total: task.subtasks.length };
   };
 
@@ -62,7 +78,11 @@ const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
   const commentsCount = task.comments ? task.comments.length : 0;
 
   return (
-    <div className={`${styles.taskCard} ${isOverdue() ? styles.overdue : ''} ${isSelected ? styles.selected : ''}`}>
+    <div
+      className={`${styles.taskCard} ${isOverdue() ? styles.overdue : ""} ${
+        isSelected ? styles.selected : ""
+      }`}
+    >
       {canEditTask() && (
         <div className={styles.selectCheckbox}>
           <input
@@ -76,15 +96,15 @@ const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
           />
         </div>
       )}
-      
+
       <div className={styles.taskHeader}>
-        <div 
+        <div
           className={styles.priorityIndicator}
           style={{ backgroundColor: getPriorityColor(task.priority) }}
         />
         <div className={styles.taskActions}>
           {canEditTask() && (
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit(task);
@@ -95,7 +115,7 @@ const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
             </button>
           )}
           {canDeleteTask() && (
-            <button 
+            <button
               onClick={handleDelete}
               className={`${styles.actionButton} ${styles.deleteButton}`}
             >
@@ -107,7 +127,7 @@ const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
 
       <div className={styles.taskContent}>
         <h3 className={styles.taskTitle}>{task.title}</h3>
-        
+
         {task.description && (
           <p className={styles.taskDescription}>{task.description}</p>
         )}
@@ -117,15 +137,18 @@ const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
             <User size={14} />
             <span>{task.assignee}</span>
           </div>
-          
+
           <div className={styles.metaItem}>
             <Calendar size={14} />
-            <span>{format(new Date(task.dueDate), 'MMM dd')}</span>
+            <span>{format(new Date(task.dueDate), "MMM dd")}</span>
           </div>
-          
+
           <div className={styles.metaItem}>
             <AlertTriangle size={14} />
-            <span className={styles.priority} style={{ color: getPriorityColor(task.priority) }}>
+            <span
+              className={styles.priority}
+              style={{ color: getPriorityColor(task.priority) }}
+            >
               {task.priority}
             </span>
           </div>
@@ -133,7 +156,7 @@ const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
 
         {task.tags && task.tags.length > 0 && (
           <div className={styles.tags}>
-            {task.tags.map(tag => (
+            {task.tags.map((tag) => (
               <span key={tag} className={styles.tag}>
                 {tag}
               </span>
@@ -146,17 +169,19 @@ const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
         {subtaskProgress.total > 0 && (
           <div className={styles.subtaskProgress}>
             <CheckSquare size={12} />
-            <span>{subtaskProgress.completed}/{subtaskProgress.total}</span>
+            <span>
+              {subtaskProgress.completed}/{subtaskProgress.total}
+            </span>
           </div>
         )}
-        
+
         {timeSpent && (
           <div className={styles.timeSpent}>
             <Clock size={12} />
             <span>{timeSpent}</span>
           </div>
         )}
-        
+
         {commentsCount > 0 && (
           <div className={styles.commentsCount}>
             <MessageCircle size={12} />
@@ -164,7 +189,7 @@ const TaskCard = ({ task, onEdit, isSelected, onSelect }) => {
           </div>
         )}
       </div>
-      
+
       {isOverdue() && (
         <div className={styles.overdueIndicator}>
           <AlertTriangle size={14} />

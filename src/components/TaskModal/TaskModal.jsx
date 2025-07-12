@@ -12,6 +12,7 @@ const TaskModal = ({ task, onClose }) => {
   const { addTask, updateTask } = useTask();
   const { user, allUsers } = useAuth();
   const [allUserList, setAllUserList] = useState([]);
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -79,9 +80,7 @@ const TaskModal = ({ task, onClose }) => {
   };
 
   const handleAssigneeChange = (e) => {
-    const selectedUser = allUsers.find(
-      (u) => u.id === parseInt(e.target.value)
-    );
+    const selectedUser = allUserList.find((u) => u.id === e.target.value);
     setFormData((prev) => ({
       ...prev,
       assignee: selectedUser.name,

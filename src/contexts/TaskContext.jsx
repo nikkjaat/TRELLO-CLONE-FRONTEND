@@ -74,7 +74,28 @@ export const TaskProvider = ({ children }) => {
     }
   };
 
-  const updateTask = (taskId, updates) => {
+  const updateTask = async (taskId, updates) => {
+    console.log(taskId, updates);
+
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/tasks/bulk/update`,
+        { taskIds: [taskId], updates },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      if (!res.data.success) {
+        throw new Error(res.data.message || "Failed to update task");
+      }
+      console.log(res.data);
+    } catch (error) {
+      console.error("Error updating task:", error);
+      throw new Error("Failed to update task");
+    }
     setTasks((prev) =>
       prev.map((task) =>
         task.id === taskId
@@ -84,8 +105,23 @@ export const TaskProvider = ({ children }) => {
     );
   };
 
-  const deleteTask = (taskId) => {
-    setTasks((prev) => prev.filter((task) => task.id !== taskId));
+  const deleteTask = async (taskId) => {
+    try {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/tasks/${taskId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      if (res.data.success) {
+        setTasks((prev) => prev.filter((task) => task.id !== taskId));
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      throw new Error("Failed to delete task");
+    }
   };
 
   const moveTask = (taskId, newStatus) => {
